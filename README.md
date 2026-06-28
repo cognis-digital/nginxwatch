@@ -8,6 +8,36 @@
 
 Part of the **[Cognis Neural Suite](https://github.com/cognis-digital)** — 370+ single-purpose, self-hostable tools. Like every tool in the suite, `nginxwatch` is single-purpose, emits machine-readable JSON, and exits non-zero when it finds something (CI-friendly).
 
+
+<!-- cognis:example:start -->
+## 🔎 Example output
+
+**Sample result format** _(illustrative values — run on your own data for real findings):_
+
+```
+{
+"nginx_config": {
+"server_name": "example.com",
+"listen_port": 8080,
+"status": "online"
+},
+"processes": [
+{
+"pid": 1234,
+"cpu_usage": 2.5,
+"memory_usage": 128
+},
+{
+"pid": 5678,
+"cpu_usage": 1.8,
+"memory_usage": 256
+}
+]
+}
+```
+
+<!-- cognis:example:end -->
+
 ## Build / run
 
 ```bash
