@@ -3,3 +3,4 @@ bin/
 *.o
 a.out
 *.bin
+tests/fixtures/_tail_tmp.log

@@ -1,0 +1,5 @@
+this is not a log line at all
+192.0.2.1 - - [bad time] "GET / HTTP/1.1"
+192.0.2.2 - - [22/Jun/2026:21:00:01 +0000] "GET /ok HTTP/1.1" 200 100 "-" "Mozilla/5.0"
+
+garbage 12345 !!!!
