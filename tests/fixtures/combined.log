@@ -1,0 +1,3 @@
+192.0.2.10 - alice [22/Jun/2026:12:00:01 +0000] "GET /index.html HTTP/1.1" 200 512 "https://ref.example/" "Mozilla/5.0 (Windows NT 10.0)"
+192.0.2.10 - alice [22/Jun/2026:12:00:02 +0000] "POST /submit HTTP/1.1" 302 0 "https://ref.example/" "Mozilla/5.0 (Windows NT 10.0)"
+192.0.2.10 - - [22/Jun/2026:12:00:03 +0000] "GET /missing HTTP/1.1" 404 149 "-" "Mozilla/5.0 (Windows NT 10.0)"

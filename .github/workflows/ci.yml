@@ -1,18 +1,45 @@
 name: ci
 on: [push, pull_request]
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: install lua
-        run: sudo apt-get update && sudo apt-get install -y lua5.4
-      - name: run on sample (expect scanning + probing, exit 2)
+
+      - name: install lua + luarocks
+        run: sudo apt-get update && sudo apt-get install -y lua5.4 luarocks
+
+      - name: unit tests
+        run: lua5.4 tests/run.lua
+
+      - name: sample must flag scanning + probing (exit 2)
         run: |
           set +e
           out=$(lua5.4 nginxwatch.lua sample.log); code=$?
           echo "$out"; echo "exit=$code"
-          echo "$out" | grep -q '"tool":"nginxwatch"' || exit 1
-          echo "$out" | grep -q '"type":"scanning"' || { echo "missing scanning"; exit 1; }
-          echo "$out" | grep -q '"type":"probing"'  || { echo "missing probing"; exit 1; }
-          [ "$code" = "2" ] || { echo "expected exit 2"; exit 1; }
+          echo "$out" | grep -q '"tool":"nginxwatch"' || { echo "missing tool field"; exit 1; }
+          echo "$out" | grep -q '"type":"scanning"'   || { echo "missing scanning"; exit 1; }
+          echo "$out" | grep -q '"type":"probing"'    || { echo "missing probing"; exit 1; }
+          [ "$code" = "2" ] || { echo "expected exit 2, got $code"; exit 1; }
+
+      - name: clean log must exit 0
+        run: |
+          set +e
+          lua5.4 nginxwatch.lua tests/fixtures/combined.log >/dev/null; code=$?
+          [ "$code" = "0" ] || { echo "expected exit 0 on clean log, got $code"; exit 1; }
+
+      - name: run all demos
+        run: LUA=lua5.4 sh demos/run_all.sh
+
+      - name: luacheck lint (best-effort)
+        continue-on-error: true
+        run: |
+          set +e
+          sudo luarocks install luacheck
+          BIN=$(command -v luacheck || echo "$(luarocks config deploy_bin_dir 2>/dev/null)/luacheck")
+          if [ -x "$BIN" ] || command -v luacheck >/dev/null 2>&1; then
+            luacheck nginxwatch.lua tests/run.lua --no-color
+          else
+            echo "luacheck unavailable; skipping lint"
+          fi
